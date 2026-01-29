@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Siddhant Lodha | Realistic Art Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #121212;
@@ -22,6 +22,7 @@
             overflow: hidden; /* Desktop handles scroll via JS */
             height: 100vh;
             width: 100vw;
+            user-select: none; /* Prevents text selection while dragging */
         }
 
         /* Responsive body for mobile */
@@ -31,6 +32,7 @@
                 overflow-x: hidden;
                 height: auto;
                 cursor: auto;
+                user-select: auto;
             }
         }
 
@@ -43,6 +45,22 @@
 
         h1, h2, h3, .serif {
             font-family: 'Cormorant Garamond', serif;
+        }
+
+        .hero-name {
+            font-weight: 300;
+            letter-spacing: -0.03em;
+        }
+
+        .hero-name-first {
+            color: #ffffff;
+            font-weight: 400;
+        }
+
+        .hero-name-last {
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 300;
+            font-style: normal;
         }
 
         #scroll-container {
@@ -90,6 +108,11 @@
             overflow: hidden;
             position: relative;
             box-shadow: 0 20px 50px -10px rgba(0,0,0,0.5);
+            pointer-events: none; 
+        }
+        
+        .art-item > div {
+            pointer-events: auto;
         }
 
         .art-image {
@@ -98,6 +121,8 @@
             height: 100%;
             object-fit: cover;
             will-change: transform;
+            -webkit-user-drag: none; 
+            user-drag: none;
         }
 
         @media (min-width: 769px) {
@@ -138,6 +163,7 @@
             left: 0;
             width: 100%;
             transition: all 0.4s ease;
+            pointer-events: none;
         }
 
         @media (min-width: 769px) {
@@ -154,13 +180,15 @@
 
         .art-number {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 4rem;
-            color: rgba(255,255,255,0.05);
+            font-size: clamp(3rem, 8vw, 5rem);
+            color: rgba(255,255,255,0.2);
             position: absolute;
-            top: -2rem;
-            right: -2rem;
-            z-index: -1;
+            top: -4.2rem;
+            right: -0.5rem; 
+            z-index: 10;
             line-height: 1;
+            pointer-events: none;
+            font-style: italic;
         }
 
         .intro-section, .outro-section {
@@ -222,25 +250,29 @@
 
     <div id="scroll-container">
         <section class="intro-section relative flex flex-col justify-center">
-            <h2 class="text-stone-500 uppercase tracking-[0.3em] text-sm mb-4">Portfolio '26</h2>
-            <h1 class="serif text-6xl md:text-9xl text-white leading-none mb-6">
-                Siddhant<br><span class="italic text-stone-400">Lodha</span>
+            <h2 class="text-stone-500 uppercase tracking-[0.4em] text-xs mb-6 font-light">Fine Art Portfolio '26</h2>
+            <h1 class="serif text-7xl md:text-[10rem] leading-[0.85] mb-8 hero-name">
+                <span class="hero-name-first">Siddhant</span><br>
+                <span class="hero-name-last">Lodha</span>
             </h1>
-            <p class="text-stone-400 max-w-md text-lg font-light leading-relaxed">
+            <div class="h-px w-24 bg-stone-700 mb-8"></div>
+            <p class="text-stone-400 max-w-sm text-lg font-light leading-relaxed">
                 A study of light, texture, and form. Documenting the quiet complexity of the world through patient observation and technical discipline.
                 <br><br>
-                <span class="text-xs uppercase tracking-widest opacity-50 block md:inline">Scroll to Explore &rarr;</span>
+                <span class="text-[10px] uppercase tracking-[0.3em] opacity-40 block md:inline">
+                    Interactive Gallery <span class="hidden md:inline">&rarr;</span><span class="md:hidden">&darr;</span>
+                </span>
             </p>
         </section>
 
         <section class="outro-section flex flex-col justify-center">
             <h2 class="serif text-5xl md:text-7xl mb-8">Get In<br>Touch</h2>
             <div class="space-y-2 text-stone-400 font-light">
-                <p>Based in [City/State]</p>
-                <a href="#" class="block hover:text-white transition-colors">contact@siddhantlodha.art</a>
+                <p>Based in New York City</p>
+                <a href="#" class="block hover:text-white transition-colors underline underline-offset-4 decoration-stone-800 hover:decoration-stone-400">contact@siddhantlodha.art</a>
                 <a href="#" class="block hover:text-white transition-colors">@siddhant.art</a>
             </div>
-            <p class="mt-12 text-xs text-stone-600 uppercase tracking-widest">&copy; 2026 Siddhant Lodha</p>
+            <p class="mt-12 text-[10px] text-stone-600 uppercase tracking-[0.2em]">&copy; 2026 Siddhant Lodha — All Rights Reserved</p>
         </section>
     </div>
 
@@ -285,14 +317,14 @@
             
             el.innerHTML = `
                 <div class="${widthClass} ${heightClass} ${marginClass} relative">
+                    <div class="art-number">${(index + 1).toString().padStart(2, '0')}</div>
                     <div class="art-image-wrapper w-full h-full bg-stone-800">
-                        <img src="${art.img}" alt="${art.title}" class="art-image" loading="lazy">
+                        <img src="${art.img}" alt="${art.title}" class="art-image" loading="lazy" draggable="false">
                     </div>
                     <div class="art-info">
                         <h3 class="serif text-2xl text-white italic">${art.title}</h3>
                         <p class="text-xs text-stone-400 uppercase tracking-widest mt-1">${art.medium} — ${art.size}</p>
                     </div>
-                    <div class="art-number">${(index + 1).toString().padStart(2, '0')}</div>
                 </div>
             `;
             container.insertBefore(el, outro);
@@ -321,14 +353,12 @@
             animate();
         };
 
-        // Desktop Scroll handling
         window.addEventListener('wheel', (e) => {
             if (isMobile) return;
             target += e.deltaY + e.deltaX;
             target = Math.max(0, Math.min(target, maxScroll));
         });
 
-        // Drag handling
         let isDragging = false;
         let startX = 0;
         let startTarget = 0;
@@ -383,7 +413,6 @@
                     img.style.transform = `scale(1.2) translateX(${distFromCenter * 0.02}px)`;
                 });
             } else {
-                // Mobile Progress calculation
                 const progress = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
                 document.getElementById('progress-fill').style.width = `${progress}%`;
             }
