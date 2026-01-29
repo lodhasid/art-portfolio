@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elena V. | Realistic Art Portfolio</title>
+    <title>Siddhant Lodha | Realistic Art Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
     <style>
@@ -19,17 +19,32 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             font-family: 'Inter', sans-serif;
-            overflow: hidden; /* Hide default scrollbars */
+            overflow: hidden; /* Desktop handles scroll via JS */
             height: 100vh;
             width: 100vw;
-            cursor: none; /* Custom cursor */
+        }
+
+        /* Responsive body for mobile */
+        @media (max-width: 768px) {
+            body {
+                overflow-y: auto;
+                overflow-x: hidden;
+                height: auto;
+                cursor: auto;
+            }
+        }
+
+        /* Hide cursor on desktop only */
+        @media (min-width: 769px) {
+            body {
+                cursor: none;
+            }
         }
 
         h1, h2, h3, .serif {
             font-family: 'Cormorant Garamond', serif;
         }
 
-        /* The scrolling container */
         #scroll-container {
             position: fixed;
             top: 0;
@@ -38,27 +53,39 @@
             display: flex;
             align-items: center;
             padding: 0 10vw;
-            gap: 8vw; /* Spacing between artworks */
+            gap: 8vw;
             will-change: transform;
         }
 
-        /* Individual Artwork Items */
+        @media (max-width: 768px) {
+            #scroll-container {
+                position: relative;
+                flex-direction: column;
+                height: auto;
+                padding: 10vh 5vw;
+                gap: 15vh;
+                transform: none !important;
+            }
+        }
+
         .art-item {
             position: relative;
             flex-shrink: 0;
-            transition: transform 0.3s ease-out;
-            opacity: 0.5; /* Fade out inactive items */
-            filter: grayscale(100%);
             transition: opacity 0.6s ease, filter 0.6s ease, transform 0.6s ease;
         }
 
-        .art-item.active {
-            opacity: 1;
-            filter: grayscale(0%);
-            transform: scale(1.05);
+        @media (min-width: 769px) {
+            .art-item {
+                opacity: 0.5;
+                filter: grayscale(100%);
+            }
+            .art-item.active {
+                opacity: 1;
+                filter: grayscale(0%);
+                transform: scale(1.05);
+            }
         }
 
-        /* Image styling */
         .art-image-wrapper {
             overflow: hidden;
             position: relative;
@@ -70,11 +97,15 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transform: scale(1.2); /* For internal parallax */
             will-change: transform;
         }
 
-        /* Custom Cursor */
+        @media (min-width: 769px) {
+            .art-image {
+                transform: scale(1.2);
+            }
+        }
+
         #cursor {
             position: fixed;
             top: 0;
@@ -91,27 +122,34 @@
         }
 
         #cursor.hovered {
-            width: 80px; /* Slightly larger for better visibility */
+            width: 80px;
             height: 80px;
-            background-color: white; /* Solid white + difference blend mode = full color inversion */
+            background-color: white;
             border-color: transparent;
         }
 
-        /* Typography & Overlay details */
+        @media (max-width: 768px) {
+            #cursor { display: none; }
+        }
+
         .art-info {
             position: absolute;
-            bottom: -3rem;
+            bottom: -3.5rem;
             left: 0;
             width: 100%;
-            opacity: 0;
-            transform: translateY(-10px);
             transition: all 0.4s ease;
         }
 
-        .art-item:hover .art-info, .art-item.active .art-info {
-            opacity: 1;
-            transform: translateY(0);
-            bottom: -4.5rem;
+        @media (min-width: 769px) {
+            .art-info {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            .art-item:hover .art-info, .art-item.active .art-info {
+                opacity: 1;
+                transform: translateY(0);
+                bottom: -4.5rem;
+            }
         }
 
         .art-number {
@@ -125,26 +163,20 @@
             line-height: 1;
         }
 
-        /* Intro Section */
-        .intro-section {
-            width: 60vw;
-            margin-right: 10vw;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+        .intro-section, .outro-section {
+            flex-shrink: 0;
         }
 
-        /* Outro Section */
-        .outro-section {
-            width: 40vw;
-            margin-left: 10vw;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
+        @media (max-width: 768px) {
+            .intro-section { width: 100%; margin-bottom: 10vh; }
+            .outro-section { width: 100%; margin-left: 0; margin-top: 10vh; }
         }
 
-        /* Loader */
+        @media (min-width: 769px) {
+            .intro-section { width: 60vw; margin-right: 10vw; }
+            .outro-section { width: 40vw; margin-left: 10vw; }
+        }
+
         #loader {
             position: fixed;
             inset: 0;
@@ -174,40 +206,22 @@
             background: white;
             width: 0%;
         }
-
-        /* Mobile Adjustments */
-        @media (max-width: 768px) {
-            #scroll-container {
-                padding: 0 5vw;
-                gap: 5vw;
-            }
-            .intro-section { width: 80vw; }
-            .art-item { opacity: 1; filter: grayscale(0); } /* Always visible on mobile */
-            body { cursor: auto; }
-            #cursor { display: none; }
-        }
     </style>
 </head>
 <body>
 
-    <!-- Loading Screen -->
     <div id="loader">
         <div class="serif text-2xl italic tracking-widest text-white animate-pulse">LOADING GALLERY</div>
     </div>
 
-    <!-- Custom Cursor -->
     <div id="cursor"></div>
 
-    <!-- Progress Bar -->
     <div class="progress-bar">
         <div class="progress-fill" id="progress-fill"></div>
     </div>
 
-    <!-- Scroll Container -->
     <div id="scroll-container">
-        
-        <!-- Intro Section -->
-        <section class="intro-section flex-shrink-0 relative">
+        <section class="intro-section relative flex flex-col justify-center">
             <h2 class="text-stone-500 uppercase tracking-[0.3em] text-sm mb-4">Portfolio '26</h2>
             <h1 class="serif text-6xl md:text-9xl text-white leading-none mb-6">
                 Siddhant<br><span class="italic text-stone-400">Lodha</span>
@@ -215,14 +229,11 @@
             <p class="text-stone-400 max-w-md text-lg font-light leading-relaxed">
                 A study of light, texture, and form. Documenting the quiet complexity of the world through patient observation and technical discipline.
                 <br><br>
-                <span class="text-xs uppercase tracking-widest opacity-50">Scroll or Drag to Explore &rarr;</span>
+                <span class="text-xs uppercase tracking-widest opacity-50 block md:inline">Scroll to Explore &rarr;</span>
             </p>
         </section>
 
-        <!-- Artworks will be injected here by JS -->
-
-        <!-- Outro Section -->
-        <section class="outro-section flex-shrink-0">
+        <section class="outro-section flex flex-col justify-center">
             <h2 class="serif text-5xl md:text-7xl mb-8">Get In<br>Touch</h2>
             <div class="space-y-2 text-stone-400 font-light">
                 <p>Based in [City/State]</p>
@@ -231,11 +242,9 @@
             </div>
             <p class="mt-12 text-xs text-stone-600 uppercase tracking-widest">&copy; 2026 Siddhant Lodha</p>
         </section>
-
     </div>
 
     <script>
-        // --- Data Configuration ---
         const artworks = [
             { title: "Morning Light", medium: "Oil on Linen", size: "24x36", img: "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?q=80&w=600&auto=format&fit=crop", orientation: "portrait" },
             { title: "Study of Hands", medium: "Graphite", size: "11x14", img: "https://images.unsplash.com/photo-1618331835717-801e976710b2?q=80&w=600&auto=format&fit=crop", orientation: "landscape" },
@@ -254,29 +263,25 @@
             { title: "Final Breath", medium: "Oil on Linen", size: "24x30", img: "https://images.unsplash.com/photo-1579783902614-a3fb39279c0f?q=80&w=600&auto=format&fit=crop", orientation: "portrait" }
         ];
 
-        // --- Init DOM ---
         const container = document.getElementById('scroll-container');
         const outro = document.querySelector('.outro-section');
 
-        // Render Artworks
         artworks.forEach((art, index) => {
             const el = document.createElement('div');
             el.className = 'art-item group';
             
-            // Random widths based on orientation for visual rhythm
-            let widthClass = "w-[60vw] md:w-[25vw]"; // Default portrait
+            let widthClass = "w-[80vw] md:w-[25vw]";
             let heightClass = "h-[50vh] md:h-[60vh]";
             
             if (art.orientation === 'landscape') {
-                widthClass = "w-[80vw] md:w-[40vw]";
+                widthClass = "w-[90vw] md:w-[40vw]";
                 heightClass = "h-[40vh] md:h-[50vh]";
             } else if (art.orientation === 'square') {
-                widthClass = "w-[70vw] md:w-[30vw]";
+                widthClass = "w-[85vw] md:w-[30vw]";
                 heightClass = "h-[40vh] md:h-[50vh]";
             }
             
-            // Offset logic for "hanging" variation (some higher, some lower)
-            const marginClass = index % 2 === 0 ? "mt-0" : "mt-24";
+            const marginClass = index % 2 === 0 ? "md:mt-0" : "md:mt-24";
             
             el.innerHTML = `
                 <div class="${widthClass} ${heightClass} ${marginClass} relative">
@@ -293,20 +298,20 @@
             container.insertBefore(el, outro);
         });
 
-        // --- Interaction Logic ---
-        
         let current = 0;
         let target = 0;
         let ease = 0.075;
         let maxScroll = 0;
-        
-        // Window Resize Handling
+        let isMobile = window.innerWidth <= 768;
+
         function onResize() {
-            maxScroll = container.scrollWidth - window.innerWidth;
+            isMobile = window.innerWidth <= 768;
+            if (!isMobile) {
+                maxScroll = container.scrollWidth - window.innerWidth;
+            }
         }
         window.addEventListener('resize', onResize);
         
-        // Wait for images to load before calculating proper width
         window.onload = () => {
             onResize();
             document.getElementById('loader').style.opacity = '0';
@@ -316,115 +321,72 @@
             animate();
         };
 
-        // Scroll Wheel Logic
+        // Desktop Scroll handling
         window.addEventListener('wheel', (e) => {
-            // Added support for horizontal scroll pads (deltaX)
-            // If dragging feels reversed, we keep deltaY positive but ensure we catch deltaX
-            // Standard: deltaY > 0 (Scroll Down) -> Move Right
-            
-            // Note: If you feel it was reversed, usually trackpads send both X and Y.
-            // This sums them to ensure diagonal movement works naturally.
-            // If you strictly want "Down = Right", positive Y adds to target.
-            
-            target += e.deltaY; 
-            target += e.deltaX; 
-
+            if (isMobile) return;
+            target += e.deltaY + e.deltaX;
             target = Math.max(0, Math.min(target, maxScroll));
         });
 
-        // --- Drag Logic (Touch & Mouse) ---
+        // Drag handling
         let isDragging = false;
         let startX = 0;
         let startTarget = 0;
 
-        // Mouse Events
         window.addEventListener('mousedown', (e) => {
+            if (isMobile) return;
             isDragging = true;
             startX = e.pageX;
             startTarget = target;
             document.body.style.cursor = 'grabbing';
-            // Scale cursor down slightly on grab
-            cursor.style.transform = "translate(-50%, -50%) scale(0.8)"; 
+            cursor.style.transform = "translate(-50%, -50%) scale(0.8)";
         });
 
         window.addEventListener('mouseup', () => {
+            if (isMobile) return;
             isDragging = false;
             document.body.style.cursor = 'none';
             cursor.style.transform = "translate(-50%, -50%) scale(1)";
         });
-        
-        window.addEventListener('mouseleave', () => {
-            isDragging = false;
-            document.body.style.cursor = 'none';
-        });
 
         window.addEventListener('mousemove', (e) => {
+            if (isMobile) return;
             if(!isDragging) return;
-            e.preventDefault();
             const x = e.pageX;
-            const walk = (x - startX) * 2; // Scroll-fast
-            target = startTarget - walk;
-            target = Math.max(0, Math.min(target, maxScroll));
-        });
-
-        // Touch Events
-        window.addEventListener('touchstart', (e) => {
-            isDragging = true;
-            startX = e.touches[0].clientX;
-            startTarget = target;
-        });
-
-        window.addEventListener('touchmove', (e) => {
-            if(!isDragging) return;
-            const x = e.touches[0].clientX;
             const walk = (x - startX) * 2;
             target = startTarget - walk;
             target = Math.max(0, Math.min(target, maxScroll));
         });
 
-        window.addEventListener('touchend', () => {
-            isDragging = false;
-        });
-
-
-        // Animation Loop
         function animate() {
-            // Linear Interpolation (Lerp) for smooth scroll
-            current = lerp(current, target, ease);
-            
-            // Move container
-            container.style.transform = `translate3d(${-current}px, 0, 0)`;
-
-            // Update Progress Bar
-            const progress = (current / maxScroll) * 100;
-            document.getElementById('progress-fill').style.width = `${progress}%`;
-
-            // Parallax & Active State for Images
-            const items = document.querySelectorAll('.art-item');
-            items.forEach((item) => {
-                const rect = item.getBoundingClientRect();
-                const center = rect.left + rect.width / 2;
-                const screenCenter = window.innerWidth / 2;
-                const distFromCenter = center - screenCenter;
+            if (!isMobile) {
+                current = lerp(current, target, ease);
+                container.style.transform = `translate3d(${-current}px, 0, 0)`;
                 
-                // Highlight item if near center
-                if (Math.abs(distFromCenter) < window.innerWidth * 0.25) {
-                    item.classList.add('active');
-                    item.classList.remove('opacity-50', 'grayscale');
-                } else {
-                    item.classList.remove('active');
-                    // Only apply fade style if not hovered
-                    if(!item.matches(':hover')) {
-                        // handled by CSS transitions mostly, just ensuring class logic
-                    }
-                }
+                const progress = (current / maxScroll) * 100;
+                document.getElementById('progress-fill').style.width = `${progress}%`;
 
-                // Internal Image Parallax (moving image inside wrapper)
-                // We map the distance from center to a translateX on the image
-                const img = item.querySelector('img');
-                const speed = 0.1; 
-                img.style.transform = `scale(1.2) translateX(${distFromCenter * speed * 0.2}px)`;
-            });
+                const items = document.querySelectorAll('.art-item');
+                items.forEach((item) => {
+                    const rect = item.getBoundingClientRect();
+                    const center = rect.left + rect.width / 2;
+                    const screenCenter = window.innerWidth / 2;
+                    const distFromCenter = center - screenCenter;
+                    
+                    if (Math.abs(distFromCenter) < window.innerWidth * 0.25) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+
+                    const img = item.querySelector('img');
+                    img.style.transform = `scale(1.2) translateX(${distFromCenter * 0.02}px)`;
+                });
+            } else {
+                // Mobile Progress calculation
+                const progress = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+                document.getElementById('progress-fill').style.width = `${progress}%`;
+            }
 
             requestAnimationFrame(animate);
         }
@@ -433,12 +395,11 @@
             return start * (1 - t) + end * t;
         }
 
-        // --- Custom Cursor Logic ---
         const cursor = document.getElementById('cursor');
         const links = document.querySelectorAll('a, .art-item');
 
-        // Only move custom cursor if not dragging (or update it during drag too)
         document.addEventListener('mousemove', (e) => {
+            if (isMobile) return;
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
