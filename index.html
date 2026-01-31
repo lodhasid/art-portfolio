@@ -71,7 +71,7 @@
             display: flex;
             align-items: center;
             padding: 0 10vw;
-            gap: 12vw; /* Increased gap for better spacing with variable widths */
+            gap: 12vw; 
             will-change: transform;
         }
 
@@ -94,23 +94,25 @@
 
         @media (min-width: 769px) {
             .art-item {
-                opacity: 0.5;
+                opacity: 0.3;
                 filter: grayscale(100%);
             }
             .art-item.active {
                 opacity: 1;
                 filter: grayscale(0%);
-                transform: scale(1.02);
             }
         }
 
         .art-image-wrapper {
-            overflow: hidden;
+            /* Removed overflow: hidden to prevent cutting */
             position: relative;
             box-shadow: 0 20px 50px -10px rgba(0,0,0,0.5);
             pointer-events: none; 
             height: 60vh; /* Consistent height base for desktop */
             width: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         @media (max-width: 768px) {
@@ -129,23 +131,18 @@
             display: block;
             width: auto;
             height: 100%;
-            max-width: 80vw; /* Prevent ultra-wide panoramas from breaking layout */
-            object-fit: contain; /* Ensures exact aspect ratio is visible */
+            max-width: 80vw;
+            object-fit: contain; 
             will-change: transform;
             -webkit-user-drag: none; 
             user-drag: none;
+            transition: transform 0.1s linear;
         }
 
         @media (max-width: 768px) {
             .art-image {
                 width: 100%;
                 height: auto;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .art-image {
-                transform: scale(1.1);
             }
         }
 
@@ -177,7 +174,7 @@
 
         .art-info {
             position: absolute;
-            bottom: -3.5rem;
+            bottom: -4.5rem;
             left: 0;
             width: 100%;
             transition: all 0.4s ease;
@@ -187,22 +184,21 @@
         @media (min-width: 769px) {
             .art-info {
                 opacity: 0;
-                transform: translateY(-10px);
+                transform: translateY(10px);
             }
-            .art-item:hover .art-info, .art-item.active .art-info {
+            .art-item.active .art-info {
                 opacity: 1;
                 transform: translateY(0);
-                bottom: -4.5rem;
             }
         }
 
         .art-number {
             font-family: 'Cormorant Garamond', serif;
             font-size: clamp(3rem, 8vw, 5rem);
-            color: rgba(255,255,255,0.2);
+            color: rgba(255,255,255,0.15);
             position: absolute;
-            top: -4.2rem;
-            right: -0.5rem; 
+            top: -3.5rem;
+            right: -1rem; 
             z-index: 10;
             line-height: 1;
             pointer-events: none;
@@ -327,7 +323,7 @@
             el.innerHTML = `
                 <div class="${marginClass} relative flex flex-col items-start">
                     <div class="art-number">${(index + 1).toString().padStart(2, '0')}</div>
-                    <div class="art-image-wrapper bg-stone-800">
+                    <div class="art-image-wrapper">
                         <img src="${art.img}" alt="${art.title}" class="art-image" loading="lazy" draggable="false">
                     </div>
                     <div class="art-info">
@@ -348,7 +344,6 @@
         function onResize() {
             isMobile = window.innerWidth <= 768;
             if (!isMobile) {
-                // We recalculate maxScroll after images load to get true width
                 maxScroll = container.scrollWidth - window.innerWidth;
             }
         }
@@ -359,7 +354,6 @@
             document.getElementById('loader').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('loader').style.display = 'none';
-                // Trigger a second resize check once layout settles
                 onResize();
             }, 500);
             animate();
@@ -367,7 +361,6 @@
 
         window.addEventListener('wheel', (e) => {
             if (isMobile) return;
-            // Support both vertical and horizontal wheeling for scrolling
             target += e.deltaY + e.deltaX;
             target = Math.max(0, Math.min(target, maxScroll));
         });
@@ -382,14 +375,12 @@
             startX = e.pageX;
             startTarget = target;
             document.body.style.cursor = 'grabbing';
-            cursor.style.transform = "translate(-50%, -50%) scale(0.8)";
         });
 
         window.addEventListener('mouseup', () => {
             if (isMobile) return;
             isDragging = false;
             document.body.style.cursor = 'none';
-            cursor.style.transform = "translate(-50%, -50%) scale(1)";
         });
 
         window.addEventListener('mousemove', (e) => {
@@ -416,7 +407,8 @@
                     const screenCenter = window.innerWidth / 2;
                     const distFromCenter = center - screenCenter;
                     
-                    if (Math.abs(distFromCenter) < window.innerWidth * 0.3) {
+                    // Slightly tighter activation range
+                    if (Math.abs(distFromCenter) < window.innerWidth * 0.25) {
                         item.classList.add('active');
                     } else {
                         item.classList.remove('active');
@@ -424,7 +416,9 @@
 
                     const img = item.querySelector('img');
                     if(img) {
-                        img.style.transform = `scale(1.1) translateX(${distFromCenter * 0.01}px)`;
+                        // Removed global scale(1.1) which was causing the clip
+                        // Now we only use translation for the parallax effect
+                        img.style.transform = `translateX(${distFromCenter * 0.02}px)`;
                     }
                 });
             } else {
