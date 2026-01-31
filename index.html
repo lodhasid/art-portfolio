@@ -339,7 +339,7 @@
                 <div class="${marginClass} relative flex flex-col items-start">
                     <div class="art-number">${(index + 1).toString().padStart(2, '0')}</div>
                     <div class="art-image-wrapper">
-                        <img src="${art.img}" alt="${art.title}" class="art-image" loading="lazy" draggable="false">
+                        <img src="${art.img}" alt="${art.title}" class="art-image" loading="lazy" draggable="false" onload="onResize()">
                     </div>
                     <div class="art-info">
                         <h3 class="serif text-2xl text-white italic">${art.title}</h3>
@@ -372,7 +372,11 @@
         function onResize() {
             isMobile = window.innerWidth <= 768;
             if (!isMobile) {
-                maxScroll = container.scrollWidth - window.innerWidth;
+                // requestAnimationFrame ensures the browser has calculated 
+                // the new widths of images before we measure the container
+                requestAnimationFrame(() => {
+                    maxScroll = container.scrollWidth - window.innerWidth;
+                });
             }
         }
         window.addEventListener('resize', onResize);
